@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile', function(Request $request) {
         return auth()->user();
     });
+    Route::post('/token', [App\Http\Controllers\API\TokenController::class, 'token']);
 
     // API route to make logout for user
     Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
