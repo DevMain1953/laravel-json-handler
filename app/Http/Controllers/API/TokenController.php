@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Validator;
 use Illuminate\Http\Request;
+use App\Services\Checker\Luhn;
+use App\Services\Converter\Date;
 
 class TokenController extends Controller
 {
@@ -15,12 +18,26 @@ class TokenController extends Controller
     */
     public function token(Request $request)
     {
-        $req = json_decode($request->getContent(), true);
-        $pan = $req['pan'] . " jumpBot";
-        $cvc = $req['cvc'];
-        $ch = $req['cardholder'];
-        $exp = $req['expire'];
+        $card_data = json_decode($request->getContent(), true);
 
-        return response()->json(['pan' => $pan, 'cvc' => $cvc, 'ch' => $ch, 'exp' => $exp, ]);
+        // Converts date for validator
+        $card_data['expire'] = Date::convert($card_data['expire']);
+
+        $validator = Validator::make($card_data, [
+            'pan' => 'required|numeric|digits:16',
+            'cvc' => 'required|numeric|digits:3',
+            'cardholder' => 'required|string',
+            'expire' => 'required|date_format:d-m-Y'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $res = '';
+        if (Luhn::check($card_data['pan']) == 0) {
+            $res = 'Card number is invalid' . PHP_EOL;
+        }
+        return response()->json($res);
     }
 }
