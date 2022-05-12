@@ -7,6 +7,7 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Services\Checker\Luhn;
 use App\Services\Converter\Date;
+use Illuminate\Support\Facades\Log;
 
 class TokenController extends Controller
 {
@@ -31,13 +32,15 @@ class TokenController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::info('Validator errors.');
             return response()->json($validator->errors());
         }
 
-        $res = '';
         if (Luhn::check($card_data['pan']) == 0) {
-            $res = 'Card number is invalid' . PHP_EOL;
+            Log::info('Card number is invalid.');
+            return response()->json(['message' => '400 Bad Request - Card number is invalid']);
         }
-        return response()->json($res);
+
+        return response()->json(['pan' => $card_data['pan'], 'token' => Date::getTokenExpire()]);
     }
 }

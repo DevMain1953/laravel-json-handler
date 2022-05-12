@@ -25,4 +25,16 @@ class Date
         }
         return $res;
     }
+
+    /**
+     * Returns the converted string in timestamp format that contains date when token expires.
+     *
+     * @return string
+     */
+    public static function getTokenExpire()
+    {
+        $minutes = config('sanctum.expiration');
+        $date = date('Y-m-d H:i:s', strtotime('+3 hours +'.$minutes.' minutes', strtotime(date('Y-m-d H:i:s'))));
+        return $date;
+    }
 }

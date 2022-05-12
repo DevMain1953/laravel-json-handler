@@ -12,7 +12,7 @@ class Luhn
      *
      * @param $digit - the number to check
      * @param $create - flag that determines the format of return value.
-     * If $create is set to true, return the input + the checksum.
+     * If $create is set to true, return value is the input + the checksum.
      * @return mixed
      */
     function check($digit, $create = false)
