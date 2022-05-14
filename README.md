@@ -9,7 +9,6 @@ This project was created to demonstrate json data handling using Laravel framewo
 - in project directory `php composer.phar install`
 - `php artisan key:generate`
 - `php artisan migrate`
-- create roles in DB
 - `php artisan serve`
 
 ## Demonstration
